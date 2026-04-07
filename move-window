@@ -1,0 +1,9 @@
+
+firefox  --new-window  https://192.168.50.181:8061 &
+main_monitor_width=$(xrandr | grep " connected primary " | cut -d' ' -f4 | cut -d 'x' -f1)
+xdotool search --sync --onlyvisible --class Firefox windowsize %1 800 600 windowmove %1 $main_monitor_width 0
+window=$(wmctrl -l | grep "Mozilla Firefox"| tail -n 1 | cut -d ' ' -f1,2)
+wmctrl -r $window -b toggle,fullscreen,below
+
+
+

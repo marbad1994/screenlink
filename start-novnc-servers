@@ -1,0 +1,3 @@
+#Runs on the linux host
+~/noVNC/utils/novnc_proxy --vnc localhost:5900 --listen 6080 &
+~/noVNC/utils/novnc_proxy --vnc 192.168.50.22:5901 --listen 6081 &

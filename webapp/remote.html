@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remote Desktop</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { background: #000; overflow: hidden; }
+        #screen { position: fixed; inset: 0; }
+    </style>
+</head>
+<body>
+    <div id="screen"></div>
+    <script type="module">
+        import RFB from '/core/rfb.js';
+
+        const WS_URL = 'wss://192.168.50.181:6081/websockify';
+        const USERNAME = 'marcusbader';
+        const PASSWORD = '1234';
+
+        function connect() {
+            const container = document.getElementById('screen');
+            container.innerHTML = '';
+            try {
+                const rfb = new RFB(container, WS_URL, {
+                    scaleViewport: true,
+                    resizeSession: false,
+                    showDotCursor: true,
+                    credentials: { username: USERNAME, password: PASSWORD },
+                });
+                rfb.viewOnly = false;
+                rfb.addEventListener('credentialsrequired', () => {
+                    rfb.sendCredentials({ username: USERNAME, password: PASSWORD });
+                });
+                rfb.addEventListener('disconnect', () => {
+                    setTimeout(connect, 3000);
+                });
+            } catch (e) {
+                setTimeout(connect, 3000);
+            }
+        }
+
+        connect();
+    </script>
+</body>
+</html>

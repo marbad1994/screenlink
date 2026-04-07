@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Screen Control</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #eee;
+        }
+        .panel {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 24px;
+            width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .title {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .mode-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s ease;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.6);
+        }
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .mode-btn.active {
+            background: #2a6ef5;
+            color: #fff;
+        }
+        .mode-btn .icon { font-size: 20px; }
+        .mode-btn .label { flex: 1; text-align: left; }
+        .status {
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+            margin-top: 12px;
+        }
+        .status.connected { color: #4a4; }
+        .status.disconnected { color: #a44; }
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <div class="title">Screen Control</div>
+
+        <button class="mode-btn active" id="btn-ext">
+            <span class="icon">🖥</span>
+            <span class="label">Extended Screen</span>
+        </button>
+
+        <button class="mode-btn" id="btn-remote">
+            <span class="icon">🎮</span>
+            <span class="label">Remote Desktop</span>
+        </button>
+
+        <hr class="divider">
+
+        <button class="mode-btn" id="btn-console">
+            <span class="icon">💻</span>
+            <span class="label">Console</span>
+        </button>
+
+        <div class="status" id="status">Connecting...</div>
+    </div>
+
+    <script>
+        let ws;
+        let currentMode = 'extended';
+
+        function connect() {
+            ws = new WebSocket('ws://localhost:8085');
+
+            ws.onopen = function() {
+                console.log('WS connected');
+                document.getElementById('status').textContent = 'Connected';
+                document.getElementById('status').className = 'status connected';
+            };
+
+            ws.onmessage = function(e) {
+                console.log('WS message:', e.data);
+                var data = JSON.parse(e.data);
+                if (data.mode) {
+                    currentMode = data.mode;
+                    updateButtons();
+                }
+            };
+
+            ws.onclose = function() {
+                document.getElementById('status').textContent = 'Disconnected';
+                document.getElementById('status').className = 'status disconnected';
+                setTimeout(connect, 2000);
+            };
+
+            ws.onerror = function() { ws.close(); };
+        }
+
+        function setMode(mode) {
+            console.log('setMode called:', mode);
+            currentMode = mode;
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('Sending:', JSON.stringify({ mode: mode }));
+                ws.send(JSON.stringify({ mode: mode }));
+            } else {
+                console.log('WS not open, state:', ws ? ws.readyState : 'null');
+            }
+            updateButtons();
+        }
+
+        function updateButtons() {
+            document.getElementById('btn-ext').className =
+                'mode-btn' + (currentMode === 'extended' ? ' active' : '');
+            document.getElementById('btn-remote').className =
+                'mode-btn' + (currentMode === 'remote' ? ' active' : '');
+        }
+
+        // Attach event listeners properly
+        document.getElementById('btn-ext').addEventListener('click', function() {
+            setMode('extended');
+        });
+        document.getElementById('btn-remote').addEventListener('click', function() {
+            setMode('remote');
+        });
+        document.getElementById('btn-console').addEventListener('click', function() {
+            window.open('http://localhost:8084', '_blank');
+        });
+
+        connect();
+    </script>
+</body>
+</html>

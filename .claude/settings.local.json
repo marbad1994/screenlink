@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./build-all.sh)",
+      "Bash(ssh marcusbader@192.168.50.22 \"mv /Applications/screen-extender-client/screen-extender-client /Applications/screen-extender-client/screen-extender-client-macos && ls -lh /Applications/screen-extender-client/\")",
+      "Bash(openssl req:*)"
+    ]
+  }
+}
