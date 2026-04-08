@@ -10,11 +10,30 @@ import asyncio
 import json
 import ssl
 import os
+import sys
 import subprocess
 import http.server
 import threading
 import websockets
+from time import sleep
+import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler("/tmp/screenlink.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+log = logging.getLogger("screenlink")
+
+# Override print to also go to log
+_print = print
+def print(*args, **kwargs):
+    msg = " ".join(str(a) for a in args)
+    log.info(msg)
+    _print(*args, **kwargs)
 
 
 CERT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'certs')
@@ -53,8 +72,8 @@ open_browser_data = {
     }
 }
 
-def get_ssh_cmd(ssh):
-    return ["ssh", "-o", "ConnectTimeout=5", ssh]
+def get_ssh_cmd(ssh, timeout=5):
+    return ["ssh", "-o", f"ConnectTimeout={timeout}", ssh]
 
 def get_brave(brave, url, profile, pre=[], post=[]):
     command = f"{brave}"
@@ -73,39 +92,68 @@ def kill_browser(role):
     kill_command = ["pkill", "-9", "-f", role]
     return kill_command
 
+def check_if_dead(role):
+    check_command = ["pgrep", "-f", role]
+    return check_command
+
 
 subprocess.Popen(
     get_ssh_cmd(MAC_SSH) + get_open_browser_cmd(EXTEND_PROFILE, "mac"),
     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
 )
 
+def kill_commands(host=True, client=True):
+    if client:
+        kill_proc = subprocess.run(
+            get_ssh_cmd(MAC_SSH, timeout=10) + kill_browser(EXTEND_PROFILE),
+            capture_output=True, text=True
+        )
+        print(f"kill client: rc={kill_proc.returncode} {kill_proc.stdout.strip()} {kill_proc.stderr.strip()}")
+    if host:
+        kill_proc = subprocess.run(
+            kill_browser(REMOTE_PROFILE),
+            capture_output=True, text=True
+        )
+        print(f"kill host: rc={kill_proc.returncode} {kill_proc.stdout.strip()} {kill_proc.stderr.strip()}")
+
+
 def clean_up():
+    print("#"*5, "Initiating Clean Up", "#"*5)
     try:
-        subprocess.run(kill_browser(REMOTE_PROFILE), text=True)
-        subprocess.Popen(
-            get_ssh_cmd(MAC_SSH) + kill_browser(REMOTE_PROFILE),
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-            )
+        kill_commands()
     except Exception as e:
         print(f"SSH error: {e}")
+    check_host = subprocess.run(check_if_dead(REMOTE_PROFILE), capture_output=True, text=True)
+    pids_left_on_host = check_host.returncode
+    print(f"check host alive: rc={pids_left_on_host} pids={check_host.stdout.strip()}")
+
+    check_client = subprocess.run(
+        get_ssh_cmd(MAC_SSH, timeout=10) + check_if_dead(EXTEND_PROFILE),
+        capture_output=True, text=True
+    )
+    pids_left_on_client = check_client.returncode
+    print(f"check client alive: rc={pids_left_on_client} pids={check_client.stdout.strip()}")
+
+    kill_commands(host=pids_left_on_host == 0, client=pids_left_on_client == 0)
+
+
 
 def switch_to_extended():
     """Close Linux remote browser, open fresh Chrome on Mac."""
     # subprocess.run(["killall", "brave"], capture_output=True)
     clean_up()
     # Open fresh Chrome on Mac with the extended screen page
-    open_windows = subprocess.check_output(["wmctrl", "-l"], text=True)
-    if EXTEND_PROFILE not in open_windows:
-        try:
-            subprocess.Popen(
-                # get_brave("/Applications/Brave\ Browser\ Beta.app/Contents/MacOS/Brave\ Browser\ Beta", "https://192.168.50.181:8080/  --args --start-fullscreen", pre=["ssh", "-o", "ConnectTimeout=2", MAC_SSH], post=["&& "]),
-                get_ssh_cmd(MAC_SSH) + get_open_browser_cmd(EXTEND_PROFILE, "mac"),
-                # get_brave(" --new-window --kiosk ", "https://192.168.50.181:8080/ &", pre=["ssh", "-o", "ConnectTimeout=2", MAC_SSH]),
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-            )
-        except Exception as e:
-            print(f"SSH error: {e}")
-        print("Mode: Extended Screen")
+
+    try:
+        subprocess.Popen(
+            # get_brave("/Applications/Brave\ Browser\ Beta.app/Contents/MacOS/Brave\ Browser\ Beta", "https://192.168.50.181:8080/  --args --start-fullscreen", pre=["ssh", "-o", "ConnectTimeout=2", MAC_SSH], post=["&& "]),
+            get_ssh_cmd(MAC_SSH) + get_open_browser_cmd(EXTEND_PROFILE, "mac"),
+            # get_brave(" --new-window --kiosk ", "https://192.168.50.181:8080/ &", pre=["ssh", "-o", "ConnectTimeout=2", MAC_SSH]),
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+    except Exception as e:
+        print(f"SSH error: {e}")
+    print("Mode: Extended Screen")
 
 
 def switch_to_remote():
@@ -115,25 +163,23 @@ def switch_to_remote():
     # Kill any existing remote browser
     #subprocess.run(["killall", "Chrome.app"], capture_output=True)
 
-    import time
-    # time.sleep(0.5)
+    # sleep(0.5)
     # Open browser on Linux, will position on DP-0
 
         # "kill", "$(lsof -i udp | grep Brave | cut -d " " -f2)"
 
     def position_on_dp0(n=0):
-        import time
         clean_up()
         subprocess.Popen(
             get_open_browser_cmd(REMOTE_PROFILE, "linux")
         )
-        time.sleep(2)
+        sleep(2)
         
         windows = subprocess.check_output(["wmctrl", "-l"], text=True)
         max_tries = 100
         active_window = None
         while REMOTE_PROFILE not in windows and max_tries > 1:
-            time.sleep(0.5)
+            sleep(0.5)
             windows = subprocess.check_output(["wmctrl", "-l"], text=True)
             max_tries -= 1
         active_window = [window for window in windows.split("\n") if REMOTE_PROFILE in window][0]
@@ -144,7 +190,7 @@ def switch_to_remote():
             position_on_dp0(n=1)
             return
         subprocess.run(["xdotool", "windowactivate", active_window])
-        time.sleep(2)
+        sleep(2)
         subprocess.run(["xdotool", "key", "ctrl+alt+g"])
         subprocess.run(["xdotool", "key", "ctrl+alt+0xff53"])
         subprocess.run(["xdotool", "key", "ctrl+alt+f"])

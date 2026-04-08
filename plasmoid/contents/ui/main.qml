@@ -94,21 +94,21 @@ PlasmoidItem {
                 text: "Start"
                 icon.name: "media-playback-start"
                 Layout.fillWidth: true
-                onClicked: runCmd("bash " + root.projectDir + "/start.sh &")
+                onClicked: runCmd(root.projectDir + "/ctl.sh start")
             }
 
             QQC2.Button {
                 text: "Stop"
                 icon.name: "media-playback-stop"
                 Layout.fillWidth: true
-                onClicked: runCmd("bash " + root.projectDir + "/stop.sh")
+                onClicked: runCmd(root.projectDir + "/ctl.sh stop")
             }
 
             QQC2.Button {
                 text: "Restart"
                 icon.name: "view-refresh"
                 Layout.fillWidth: true
-                onClicked: runCmd("bash " + root.projectDir + "/stop.sh && sleep 2 && bash " + root.projectDir + "/start.sh &")
+                onClicked: runCmd(root.projectDir + "/ctl.sh restart")
             }
         }
 
