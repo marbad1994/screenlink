@@ -18,7 +18,7 @@ NC='\033[0m'
 echo -e "${BLUE}Screen Extender - Starting${NC}"
 
 # Activates python venv
-source .venv/bin/activate 
+source "$PROJECT_DIR/.venv/bin/activate"
 
 # Step 1: Set up virtual display (if not already)
 if ! xrandr | grep -q "DP-0 connected"; then

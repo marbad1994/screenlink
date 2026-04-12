@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcus Bader — Full-Stack Engineer & Architect</title>
+    <link rel="stylesheet" href="about.css">
+</head>
+<body>
+    <div class="scroll-driver"></div>
+
+    <div class="viewport" id="viewport">
+        <!-- Backgrounds -->
+        <div class="bg-layer color-bg" id="color-bg"></div>
+        <div class="bg-layer bw-bg" id="bw-bg"></div>
+
+        <!-- Main scrollable content -->
+        <div class="scroll-content" id="scroll-content">
+
+            <!-- Stat -->
+            <div class="stat-box">
+                <div class="stat-num">8+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline" id="timeline">
+                <div class="tl-line"></div>
+
+                <div class="tl-item" data-index="0">
+                    <div class="tl-dot active"></div>
+                    <div class="tl-body">
+                        <div class="tl-role">Full-Stack Engineer & ML Architect</div>
+                        <div class="tl-company">Nostic (Dental AI)</div>
+                        <div class="tl-desc">Serverless AI platform on AWS — 16+ Lambda microservices, 9+ PyTorch models, Angular frontend</div>
+                        <div class="tl-tags"><span>Python</span><span>Angular</span><span>AWS</span><span>PyTorch</span><span>Claude LLM</span></div>
+                    </div>
+                </div>
+
+                <div class="tl-item" data-index="1">
+                    <div class="tl-dot active"></div>
+                    <div class="tl-body">
+                        <div class="tl-role">Design Architect & Team Facilitator</div>
+                        <div class="tl-company">Ericsson</div>
+                        <div class="tl-meta">2020 — Present</div>
+                        <div class="tl-desc">Automated test framework with analytics, data viz, and distributed execution</div>
+                        <div class="tl-tags"><span>FastAPI</span><span>PostgreSQL</span><span>Vue</span><span>Ansible</span></div>
+                    </div>
+                </div>
+
+                <div class="tl-item" data-index="2">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <div class="tl-role">Business Manager & Developer</div>
+                        <div class="tl-company">Appsight Solutions</div>
+                        <div class="tl-meta">2021 — Present</div>
+                        <div class="tl-desc">Founded innovation hub — webshops, real estate systems, open-source libraries</div>
+                        <div class="tl-tags"><span>React</span><span>Flask</span><span>MongoDB</span><span>React Native</span></div>
+                    </div>
+                </div>
+
+                <div class="tl-item" data-index="3">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <div class="tl-role">Software Developer</div>
+                        <div class="tl-company">Boeing</div>
+                        <div class="tl-meta">2019 — 2020</div>
+                    </div>
+                </div>
+
+                <div class="tl-item" data-index="4">
+                    <div class="tl-dot"></div>
+                    <div class="tl-body">
+                        <div class="tl-role">Developer & Agile Coach</div>
+                        <div class="tl-company">Cactus Rail</div>
+                        <div class="tl-meta">2016 — 2019</div>
+                        <div class="tl-desc">Traffic management systems, data diode hardware, Scrum for 6-7 teams</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat zone -->
+            <div class="chat-zone" id="chat-zone">
+                <div class="speech-bubble" id="speech-bubble">
+                    <p>I'm happy to answer any questions you have in the chat below! 👋</p>
+                    <div class="speech-tail"></div>
+                </div>
+
+                <div class="chat-box" id="chat-box">
+                    <div class="chat-header">
+                        <div class="chat-avatar">MB</div>
+                        <div>
+                            <div class="chat-name">Marcus AI</div>
+                            <div class="chat-powered">Powered by AWS Bedrock + Claude</div>
+                        </div>
+                        <div class="chat-dot-online"></div>
+                    </div>
+                    <div class="chat-messages">
+                        <div class="msg bot">Hey! I'm an AI version of Marcus, built with AWS Bedrock and Claude. Ask me anything about my experience, projects, or tech stack.</div>
+                        <div class="msg user">What's your strongest technical skill?</div>
+                        <div class="msg bot">I'd say building end-to-end serverless architectures on AWS. At Nostic, I designed a platform with 16+ Lambda microservices processing dental X-rays through 9 ML models in parallel — from infrastructure-as-code to the frontend.</div>
+                        <div class="msg user">How did you build this AI agent?</div>
+                        <div class="msg bot" id="typing-msg">
+                            <span class="typing-dots"><span></span><span></span><span></span></span>
+                        </div>
+                    </div>
+                    <div class="chat-input-bar">
+                        <input type="text" placeholder="Ask Marcus AI anything..." disabled>
+                        <button disabled>→</button>
+                    </div>
+                </div>
+
+                <div class="ai-info">
+                    <div class="ai-chip"><span class="chip-icon">🧠</span> AWS Bedrock + Claude</div>
+                    <div class="ai-chip"><span class="chip-icon">📚</span> Knowledge Base RAG</div>
+                    <div class="ai-chip"><span class="chip-icon">🤖</span> Agent Orchestration</div>
+                    <div class="ai-chip"><span class="chip-icon">⚡</span> Serverless Lambda</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marcus photo — floats on right, moves down with scroll -->
+        <div class="marcus-float" id="marcus-float">
+            <img src="assets/marcus-photo.png" class="marcus-img" id="color-img" alt="Marcus">
+            <img src="assets/marcus-cartoon.png" class="marcus-img cartoon" id="cartoon-img" alt="Marcus Cartoon">
+        </div>
+    </div>
+
+    <script src="about.js"></script>
+</body>
+</html>
