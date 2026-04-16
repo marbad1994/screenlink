@@ -3,7 +3,12 @@
     "allow": [
       "Bash(./build-all.sh)",
       "Bash(ssh marcusbader@192.168.50.22 \"mv /Applications/screen-extender-client/screen-extender-client /Applications/screen-extender-client/screen-extender-client-macos && ls -lh /Applications/screen-extender-client/\")",
-      "Bash(openssl req:*)"
+      "Bash(openssl req:*)",
+      "Bash(chmod +x /home/marcus/Documents/repos/dev-containers/devbox)",
+      "Bash(sudo ln:*)",
+      "Bash(ln -sf /home/marcus/Documents/repos/dev-containers/devbox ~/.local/bin/devbox)",
+      "Bash(ls -lh /home/marcus/.claude/projects/-home-marcus-Documents-repos-local-remote-workspace/*.jsonl)",
+      "Bash(python3 -c ':*)"
     ]
   }
 }

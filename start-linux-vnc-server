@@ -1,1 +1,0 @@
-x0vncserver FrameRate=30 CompareFB=1 SecurityTypes=none AcceptPointerEvents=True AlwaysShared=on MaxProcessorUsage=70 -geometry 1440x900+1920+0

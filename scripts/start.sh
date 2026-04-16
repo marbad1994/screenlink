@@ -17,6 +17,9 @@ NC='\033[0m'
 
 echo -e "${BLUE}Screen Extender - Starting${NC}"
 
+# Activates python venv
+source "$PROJECT_DIR/.venv/bin/activate"
+
 # Step 1: Set up virtual display (if not already)
 if ! xrandr | grep -q "DP-0 connected"; then
     echo "Setting up virtual display on DP-0..."
@@ -78,7 +81,8 @@ python "$PROJECT_DIR/webapp/control.py" &
 sleep 1
 
 
-ssh marcusbader@192.168.50.22 "/Applications/Brave\ Browser\ Beta.app/Contents/MacOS/Brave\ Browser\ Beta --sync https://192.168.50.181:8080 &"
+# ssh marcusbader@192.168.50.22 "/Applications/Brave\ Browser\ Beta.app/Contents/MacOS/Brave\ Browser\ Beta --sync https://192.168.50.181:8080 &"
+#ssh marcusbader@192.168.50.22 "/Applications/Firefox.app/Contents/MacOS/firefox -P extend-screen-profile --new-window --kiosk https://192.168.50.181:8080 &"
 
 echo ""
 echo -e "${BLUE}========================================${NC}"

@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Id": "com.screenextender.control",
+        "Name": "ScreenLink",
+        "Description": "Toggle between Extended Screen and Remote Desktop",
+        "Icon": "video-display",
+        "Authors": [{ "Name": "Marcus" }],
+        "Category": "Utilities",
+        "Version": "1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "KPackageStructure": "Plasma/Applet"
+}
