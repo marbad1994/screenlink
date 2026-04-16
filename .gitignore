@@ -1,6 +1,5 @@
-
-.claude
-.codex
-.vscode
-.notes
+.claude/
+.codex/
+.vscode/
+.notes/
 certs/*
