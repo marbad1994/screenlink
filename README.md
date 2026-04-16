@@ -1,4 +1,4 @@
-# ScreenLink
+# ScreenLink - Extend your desktop to any device (Nvidia compatible)
 
 ## Demo
 
