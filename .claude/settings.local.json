@@ -6,7 +6,9 @@
       "Bash(openssl req:*)",
       "Bash(chmod +x /home/marcus/Documents/repos/dev-containers/devbox)",
       "Bash(sudo ln:*)",
-      "Bash(ln -sf /home/marcus/Documents/repos/dev-containers/devbox ~/.local/bin/devbox)"
+      "Bash(ln -sf /home/marcus/Documents/repos/dev-containers/devbox ~/.local/bin/devbox)",
+      "Bash(ls -lh /home/marcus/.claude/projects/-home-marcus-Documents-repos-local-remote-workspace/*.jsonl)",
+      "Bash(python3 -c ':*)"
     ]
   }
 }

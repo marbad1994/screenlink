@@ -1,5 +1,17 @@
 # ScreenLink
 
+## Demo
+
+Interactive demo to demonstrates the seamless control of computers.
+[Interactive Demo](https://marcus-bader.taild8e48a.ts.net/screenlink-demo)
+
+## The project
+consists of one host app and one client app, and if you're on KDE there is a widget to controll it
+
+## Status
+
+Currently working on connecting a second laptop a windows laptop, I have ideas to implement USB capturing, Webcam capturing, stream to phone and smart TV's. I am using my setup daily and it's quite stable.
+
 ## What it does
 
 ScreenLink turns your laptops into extra monitors for your Linux desktop — and gives you remote control of each machine from a single keyboard and mouse. No special hardware, no dongles, no proprietary software. Just your existing computers on the same network.
@@ -82,23 +94,12 @@ The project started on KDE Wayland, which is the default on Arch Linux. Screen c
 
 The solution was pragmatic: switch to KDE on X11. For a screen extender that needs continuous, low-latency capture of specific display regions, X11 is the right choice. Wayland's security model is designed to prevent exactly what this tool needs to do.
 
-### The mirroring trap
-
-The first working prototype captured the Linux screen and streamed it to the Mac. The Mac showed the Linux desktop. "It works!" — except it was a mirror, not an extension. The Mac showed the same content as the Linux monitor.
-
-This is the fundamental difference between screen mirroring and screen extension, and it's the reason the virtual display problem had to be solved. Without a second display output that the compositor treats as a real monitor, there's nothing to extend to. The virtual display isn't a nice-to-have — it's the entire point.
 
 ### The infinite loop
 
 When implementing Remote Desktop mode, the first approach was to show the Mac's screen in a noVNC window on the Mac itself. The VNC server captures the screen, which includes the VNC viewer showing the screen, which includes the VNC viewer... recursive mirrors filling the display.
 
 The solution was to put the VNC viewer on the Linux side instead, specifically on the virtual display. The Mac browser shows whatever is on the virtual display. The virtual display shows a browser connected to the Mac's VNC server. The Mac sees its own desktop — but through the Linux virtual display, not through a local viewer. No recursion because the VNC viewer isn't on the Mac's screen.
-
-### Browser fullscreen
-
-JavaScript's Fullscreen API requires a user gesture — you can't trigger it programmatically from a WebSocket message. The Mac browser needed to be fullscreen (no address bar, no tabs) to act as a convincing second monitor, but the control signal came from the Linux side.
-
-The solution was to launch Chrome with `--kiosk` mode via SSH, which starts fullscreen without needing a user click. When switching modes, the browser is closed entirely and a fresh instance is launched. Inelegant but reliable.
 
 ### Certificate fatigue
 
