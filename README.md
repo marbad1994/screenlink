@@ -3,7 +3,7 @@
 ## Demo
 
 Interactive demo to demonstrates the seamless control of computers.
-[Interactive Demo](https://marcus-bader.taild8e48a.ts.net/screenlink-demo)
+[Interactive Demo](https://marbad1994.github.io)
 
 ## The project
 consists of one host app and one client app, and if you're on KDE there is a widget to controll it
